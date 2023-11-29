@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>{{ object.name }}</title>
+</head>
+<body>
+    <h1>{{ object.name }}</h1>
+    <p>{{ object.description }}</p>
+    <button onclick="redirectToCheckout({{ object.id }})">Buy</button>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        function redirectToCheckout(itemId) {
+            fetch(`/buy/${itemId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    var stripe = Stripe('{{ pk_test_51OHqQMA0O7Z5JXeoDFFgIQOWEE2Qop2GKjCX5JqeeGwaZ5K0Y3xwnYTFCsUIp8VWPPZWQdKg90qR1QyNzAoChPNv0003Xc8zr1 }}');
+                    stripe.redirectToCheckout({ sessionId: data.session_id });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Обработка ошибок, если не удалось получить session_id
+                });
+        }
+        
+    </script>
+</body>
+</html>

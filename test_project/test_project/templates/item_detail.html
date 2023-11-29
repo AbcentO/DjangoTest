@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>{{ object.name }}</title>
+</head>
+<body>
+    <h1>{{ object.name }}</h1>
+    <p>{{ object.description }}</p>
+    <p>Валюта: {{ object.currency }}</p>
+    <button onclick="handleBuyButtonClick('{{ item.id }}')">Buy Now</button>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        function handleBuyButtonClick(itemId) {
+            var stripe = Stripe('pk_test_51OHqQMA0O7Z5JXeoDFFgIQOWEE2Qop2GKjCX5JqeeGwaZ5K0Y3xwnYTFCsUIp8VWPPZWQdKg90qR1QyNzAoChPNv0003Xc8zr1');
+            console.log(itemId);
+            fetch(`/buy/${itemId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    redirectToCheckout(data.session_id);
+                })
+                .catch(error => {
+                    console.log(error);
+                    console.error('Error:', error);
+                    // Обработка ошибок, если не удалось получить session_id
+                });
+        }
+
+        function redirectToCheckout(sessionId) {
+            var stripe = Stripe('pk_test_51OHqQMA0O7Z5JXeoDFFgIQOWEE2Qop2GKjCX5JqeeGwaZ5K0Y3xwnYTFCsUIp8VWPPZWQdKg90qR1QyNzAoChPNv0003Xc8zr1');
+
+            stripe.redirectToCheckout({
+                sessionId: sessionId
+            }).then(function (result) {
+                if (result.error) {
+                    console.error(result.error.message);
+                }
+            });
+        }
+
+
+        
+        
+    </script>
+</body>
+</html>
